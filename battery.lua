@@ -63,7 +63,7 @@ function batclosure (adapter)
             percent = ""
         end
 
-        return " ⚡" .. percent .. indicator .. watt .. remaining .. " "
+        return "⚡" .. percent .. indicator .. watt .. remaining
     end
 end
 

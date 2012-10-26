@@ -16,9 +16,9 @@ function getVolumeText ()
     status = string.match(status, "%[(o[^%]]*)%]")
 
     if string.find(status, "on", 1, true) then
-        volume = " ♫" .. volume .. " "
+        volume = "♫" .. volume
     else
-        volume = " ♫M "
+        volume = "♫M"
     end
     return volume
 end

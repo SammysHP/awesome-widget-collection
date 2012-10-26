@@ -20,7 +20,7 @@ function refreshC (url)
             f:close()
         end
         spawnFetching(url)
-        return " ✉" .. count .. " "
+        return "✉" .. count
     end
 end
 
@@ -28,7 +28,7 @@ function createWidget (url, interval)
     spawnFetching(url)
     local w = widget({ type = "textbox", align = "right" })
     local refresh = refreshC(url)
-    w.text = " ✉? "
+    w.text = "✉?"
     w:buttons(awful.util.table.join(
         awful.button({ }, 1, function()
             awful.util.spawn("xdg-open http://mail.google.com/")

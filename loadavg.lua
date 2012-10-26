@@ -9,7 +9,7 @@ function currentLoad ()
     local lf = io.open("/proc/loadavg")
     local l = lf:read()
     lf:close()
-    return " " .. string.match(l, "(%d.%d+).*") .. " "
+    return string.match(l, "(%d.%d+).*")
 end
 
 function createWidget (interval)
