@@ -5,29 +5,32 @@ local awful = awful
 
 module("widgets.gmail")
 
-local cache = awful.util.getdir("cache") .. "/gmailcount"
+local cachePath = awful.util.getdir("cache") .. "/gmailcount"
 
-function spawnFetching (url)
-    awful.util.spawn_with_shell("curl --connect-timeout 5 -m 10 -fs \"" .. url .. "\" > " .. cache)
-end
+function fetchC (url, w)
+    local t = timer({ timeout = 10 })
+    t:add_signal("timeout", function () t:stop(); w.text = readCache() end)
 
-function refreshC (url)
     return function ()
-        local f = io.open(cache)
-        local count = "?"
-        if f ~= nil then
-            count = f:read() or "?"
-            f:close()
-        end
-        spawnFetching(url)
-        return "✉" .. count
+        awful.util.spawn_with_shell("curl --connect-timeout 5 -m 9 -fs \"" .. url .. "\" > " .. cachePath)
+        t:start()
     end
 end
 
+function readCache ()
+    local f = io.open(cachePath)
+    local count = "?"
+    if f ~= nil then
+        count = f:read() or "?"
+        f:close()
+    end
+    return "✉" .. count
+end
+
 function createWidget (url, interval)
-    spawnFetching(url)
     local w = widget({ type = "textbox", align = "right" })
-    local refresh = refreshC(url)
+    local fetch = fetchC(url, w)
+    fetch()
     w.text = "✉?"
     w:buttons(awful.util.table.join(
         awful.button({ }, 1, function()
@@ -35,7 +38,7 @@ function createWidget (url, interval)
         end)
     ))
     local t = timer({ timeout = interval })
-    t:add_signal("timeout", function() w.text = refresh() end)
+    t:add_signal("timeout", fetch)
     t:start()
     return w
 end
